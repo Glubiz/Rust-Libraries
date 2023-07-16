@@ -1,0 +1,11 @@
+D:\GitHub\Libraries\request\target\debug\deps\serde_urlencoded-5ff42a1665de4c23.rmeta: C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\lib.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\de.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\mod.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\key.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\pair.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\part.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\value.rs
+
+D:\GitHub\Libraries\request\target\debug\deps\serde_urlencoded-5ff42a1665de4c23.d: C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\lib.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\de.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\mod.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\key.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\pair.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\part.rs C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\value.rs
+
+C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\lib.rs:
+C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\de.rs:
+C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\mod.rs:
+C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\key.rs:
+C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\pair.rs:
+C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\part.rs:
+C:\Users\josj\.cargo\registry\src\index.crates.io-6f17d22bba15001f\serde_urlencoded-0.7.1\src\ser\value.rs:

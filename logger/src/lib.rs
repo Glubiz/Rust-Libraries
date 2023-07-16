@@ -1,6 +1,7 @@
 use chrono::prelude::*;
 use std::fmt;
 use std::panic::Location;
+use tokio::task;
 
 use mysql::execute;
 
@@ -26,7 +27,7 @@ impl fmt::Display for LogLevel {
 pub struct Logger {}
 
 impl Logger {
-    async fn log_internal(&self, level: LogLevel, location: &Location<'_>, message: &str) {
+    async fn log_internal(level: LogLevel, location: &Location<'_>, message: &str) {
         let now = Utc::now();
         let line = format!(
             "{}: {} @ {}: line {} - {}",
@@ -49,10 +50,13 @@ impl Logger {
                 message
             );
 
-            match execute(query.as_str(), None).await {
-                Ok(_) => println!("Inserted successfully"),
-                Err(err) => println!("Error inserting: {}", err),
-            }
+            let _ = task::spawn(async move {
+                match execute(query.as_str(), None).await {
+                    Ok(_) => println!("Inserted successfully"),
+                    Err(err) => println!("Error inserting: {}", err),
+                }
+            })
+            .await;
         }
     }
 
@@ -66,54 +70,57 @@ impl Logger {
         );"
         .to_owned();
 
-        match execute(query.as_str(), None).await {
-            Ok(_) => println!("Table created successfully"),
-            Err(err) => println!("Error creating table: {}", err),
-        }
+        let _ = task::spawn(async move {
+            match execute(query.as_str(), None).await {
+                Ok(_) => println!("Table created successfully"),
+                Err(err) => println!("Error creating table: {}", err),
+            }
+        })
+        .await;
     }
 
-    pub async fn debug(&self, location: &Location<'_>, message: &str) {
-        self.log_internal(LogLevel::Debug, location, message).await;
-    }
-
-    pub async fn info(&self, location: &Location<'_>, message: &str) {
-        self.log_internal(LogLevel::Info, location, message).await;
-    }
-
-    pub async fn warn(&self, location: &Location<'_>, message: &str) {
-        self.log_internal(LogLevel::Warn, location, message).await;
-    }
-
-    pub async fn error(&self, location: &Location<'_>, message: &str) {
-        self.log_internal(LogLevel::Error, location, message).await;
+    pub async fn log(level: LogLevel, location: &Location<'_>, message: &str) {
+        Self::log_internal(level, location, message).await;
     }
 }
 
 #[macro_export]
 macro_rules! debug {
-    ($logger:expr, $msg:expr) => {
-        $logger.debug(std::panic::Location::caller(), $msg)
+    ($msg:expr) => {
+        tokio::spawn(async move {
+            let location = std::panic::Location::caller();
+            Logger::log(LogLevel::Debug, &location, $msg).await;
+        })
     };
 }
 
 #[macro_export]
 macro_rules! info {
-    ($logger:expr, $msg:expr) => {
-        $logger.info(std::panic::Location::caller(), $msg)
+    ($msg:expr) => {
+        tokio::spawn(async move {
+            let location = std::panic::Location::caller();
+            Logger::log(LogLevel::Info, &location, $msg).await;
+        })
     };
 }
 
 #[macro_export]
 macro_rules! warn {
-    ($logger:expr, $msg:expr) => {
-        $logger.warn(std::panic::Location::caller(), $msg)
+    ($msg:expr) => {
+        tokio::spawn(async move {
+            let location = std::panic::Location::caller();
+            Logger::log(LogLevel::Warn, &location, $msg).await;
+        })
     };
 }
 
 #[macro_export]
 macro_rules! error {
-    ($logger:expr, $msg:expr) => {
-        $logger.error(std::panic::Location::caller(), $msg)
+    ($msg:expr) => {
+        tokio::spawn(async move {
+            let location = std::panic::Location::caller();
+            Logger::log(LogLevel::Error, &location, $msg).await;
+        })
     };
 }
 
@@ -128,10 +135,15 @@ mod tests {
         dotenv().ok();
         env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
 
-        let logger = Logger {};
-        logger
-            .debug(Location::caller(), "This is a debug log")
-            .await;
+        let _ = debug!("This is a debug log").await;
+    }
+
+    #[tokio::test]
+    async fn test_debug_format() {
+        dotenv().ok();
+        env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
+        let message = "This is a debug log";
+        let _ = debug!(format!("{}", message).as_str()).await;
     }
 
     #[tokio::test]
@@ -139,8 +151,15 @@ mod tests {
         dotenv().ok();
         env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
 
-        let logger = Logger {};
-        logger.info(Location::caller(), "This is an info log").await;
+        let _ = info!("This is a info log").await;
+    }
+
+    #[tokio::test]
+    async fn test_info_format() {
+        dotenv().ok();
+        env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
+        let message = "This is a info log";
+        let _ = info!(format!("{}", message).as_str()).await;
     }
 
     #[tokio::test]
@@ -148,8 +167,15 @@ mod tests {
         dotenv().ok();
         env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
 
-        let logger = Logger {};
-        logger.warn(Location::caller(), "This is a warn log").await;
+        let _ = warn!("This is a warn log").await;
+    }
+
+    #[tokio::test]
+    async fn test_warn_format() {
+        dotenv().ok();
+        env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
+        let message = "This is a warn log";
+        let _ = warn!(format!("{}", message).as_str()).await;
     }
 
     #[tokio::test]
@@ -157,9 +183,14 @@ mod tests {
         dotenv().ok();
         env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
 
-        let logger = Logger {};
-        logger
-            .error(Location::caller(), "This is an error log")
-            .await;
+        let _ = error!("This is an error log").await;
+    }
+
+    #[tokio::test]
+    async fn test_error_format() {
+        dotenv().ok();
+        env::set_var("DATABASE_URL", "mysql://root:password@localhost/test");
+        let message = "This is a error log";
+        let _ = error!(format!("{}", message).as_str()).await;
     }
 }
